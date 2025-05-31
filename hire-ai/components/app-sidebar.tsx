@@ -64,7 +64,7 @@ export function AppSidebar() {
 
   return (
     <Sidebar>
-      <SidebarHeader className="p-4">
+      <SidebarHeader className="p-4 bg-card">
         <div className="flex items-center gap-2">
           <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
             <Brain className="h-4 w-4" />
@@ -75,7 +75,7 @@ export function AppSidebar() {
           </div>
         </div>
       </SidebarHeader>
-      <SidebarContent>
+      <SidebarContent className="bg-card">
         <SidebarGroup>
           <SidebarGroupLabel>Navigation</SidebarGroupLabel>
           <SidebarGroupContent>
@@ -94,8 +94,8 @@ export function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
-      <SidebarFooter className="p-4">
-        <div className="text-xs text-muted-foreground">© 2024 HireAI Platform</div>
+      <SidebarFooter className="p-4 bg-card">
+        <div className="text-xs text-muted-foreground">© 2025 HireAI Platform</div>
       </SidebarFooter>
     </Sidebar>
   )
