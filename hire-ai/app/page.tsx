@@ -25,8 +25,17 @@ export default async function RootPage() {
         return user_role;
     };
 
-    if ((await getUserRole()) == "recruiter") {
-        redirect("/dashboard");
+    const userRole = await getUserRole();
+
+    switch (userRole) {
+        case "recruiter":
+            redirect("/dashboard");
+            break;
+        case "candidate":
+            redirect("/home");
+            break;
+        default:
+            redirect("/error");
     }
 
     return (
