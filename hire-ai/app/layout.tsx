@@ -24,7 +24,12 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+        <ThemeProvider 
+          attribute="class" 
+          defaultTheme="system" 
+          enableSystem 
+          storageKey="hireai-theme"
+        >
           <SidebarProvider>
             <div className="flex min-h-screen w-full">
               <AppSidebar />
