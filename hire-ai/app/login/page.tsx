@@ -26,6 +26,8 @@ export default async function LoginPage() {
             case "candidate":
                 redirect("/home");
                 break;
+            case "undefined":
+                redirect("/role-setup");
             default:
                 redirect("/error");
         }

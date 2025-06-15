@@ -31,6 +31,8 @@ export default async function RootPage() {
         case "candidate":
             redirect("/home");
             break;
+        case "undefined":
+            redirect("/role-setup");
         default:
             redirect("/error");
     }
