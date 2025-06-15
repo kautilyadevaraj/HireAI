@@ -7,8 +7,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { createClient } from "@/utils/supabase/client";
-import { revalidateJugad } from "./actions";
-
 export default function SetupForm() {
     const [fullName, setFullName] = useState("");
     const [role, setRole] = useState("");
