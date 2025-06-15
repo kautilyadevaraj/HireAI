@@ -1,4 +1,8 @@
-export default function UndefinedPage() {
+import { createClient } from "@/utils/supabase/server";
+
+export default async function RoleSetupPage() {
+    const supabase = await createClient();
+
     return (
         <div className="flex min-h-screen w-full items-center justify-center">
             <div className="text-center">

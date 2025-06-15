@@ -1,23 +1,15 @@
 import { LoginForm } from "@/components/login-form";
-import { CustomJwtPayload } from "@/lib/utils";
+import { CustomJwtPayload, getUserRole } from "@/lib/utils";
 import { createClient } from "@/utils/supabase/server";
 import { jwtDecode } from "jwt-decode";
 import { redirect } from "next/navigation";
 
 export default async function LoginPage() {
-    const getUserRole = async () => {
-        const { data, error } = await supabase.auth.getSession();
-        const jwt = data.session!.access_token;
-        const decoded = jwtDecode<CustomJwtPayload>(jwt);
-        const user_role: string = decoded.user_role;
-        return user_role;
-    };
-
     // check if already logged in
     const supabase = await createClient();
     const { data, error } = await supabase.auth.getUser();
     if (data.user) {
-        const userRole = await getUserRole();
+        const userRole = await getUserRole(supabase);
 
         switch (userRole) {
             case "recruiter":
