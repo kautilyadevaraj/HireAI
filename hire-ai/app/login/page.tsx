@@ -19,7 +19,7 @@ export default async function LoginPage() {
                 redirect("/home");
                 break;
             case "undefined":
-                redirect("/role-setup");
+                redirect("/setup");
             default:
                 redirect("/error");
         }

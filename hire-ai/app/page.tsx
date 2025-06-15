@@ -20,7 +20,7 @@ export default async function RootPage() {
             redirect("/home");
             break;
         case "undefined":
-            redirect("/role-setup");
+            redirect("/setup");
         default:
             redirect("/error");
     }
