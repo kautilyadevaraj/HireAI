@@ -1,3 +1,6 @@
+"use client";
+
+import { useState } from "react";
 import { GalleryVerticalEnd } from "lucide-react";
 
 import { cn } from "@/lib/utils";
@@ -10,6 +13,22 @@ export function LoginForm({
     className,
     ...props
 }: React.ComponentProps<"div">) {
+    const [error, setError] = useState<string | null>(null);
+    const [isLoading, setIsLoading] = useState(false);
+
+    const handleLogin = async (formData: FormData) => {
+        setIsLoading(true);
+        setError(null);
+
+        const result = await login(formData);
+
+        if (result?.error) {
+            setError(result.error);
+        }
+
+        setIsLoading(false);
+    };
+
     return (
         <div className={cn("flex flex-col gap-6", className)} {...props}>
             <div className="flex flex-col gap-6">
@@ -33,7 +52,7 @@ export function LoginForm({
                 </div>
 
                 {/* Email/Password Login Form */}
-                <form className="flex flex-col gap-6">
+                <form action={handleLogin} className="flex flex-col gap-6">
                     <div className="grid gap-3">
                         <Label htmlFor="email">Email</Label>
                         <Input
@@ -54,8 +73,17 @@ export function LoginForm({
                             placeholder="••••••••"
                         />
                     </div>
-                    <Button type="submit" className="w-full" formAction={login}>
-                        Login
+
+                    {error && (
+                        <div className="text-sm text-red-600">{error}</div>
+                    )}
+
+                    <Button
+                        type="submit"
+                        className="w-full"
+                        disabled={isLoading}
+                    >
+                        {isLoading ? "Logging in..." : "Login"}
                     </Button>
                 </form>
 
