@@ -12,7 +12,7 @@ export default async function RoleSetupPage() {
     }
 
     return (
-        <div className="flex min-h-screen w-full items-center justify-center">
+        <div className="flex min-h-screen p-4 w-full items-center justify-center">
             <div className="text-center">
                 <SetupForm />
             </div>

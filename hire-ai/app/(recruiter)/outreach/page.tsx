@@ -1,18 +1,44 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { Label } from "@/components/ui/label"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Mail, Send, Calendar, TrendingUp, MessageSquare, Plus, Edit, Copy } from "lucide-react"
+import { useState } from "react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { TooltipProvider } from "@/components/ui/tooltip";
+import { useToast } from "@/hooks/use-toast";
 
-const emailTemplates = [
+// Components
+import { OutreachStatsComponent } from "@/components/outreach/outreach-stats";
+import { CampaignList } from "@/components/outreach/campaigns/campaign-list";
+import { NewCampaignDialog } from "@/components/outreach/campaigns/new-campaign-dialog";
+import { TemplateList } from "@/components/outreach/message-templates/template-list";
+import { TemplatePreview } from "@/components/outreach/message-templates/template-preview";
+import { NewTemplateDialog } from "@/components/outreach/message-templates/new-template-dialog";
+import { EditTemplateDialog } from "@/components/outreach/message-templates/edit-template-dialog";
+import { ComposeMessage } from "@/components/outreach/compose/compose-message";
+import { MessageList } from "@/components/outreach/inbox/message-list";
+import { MessageViewDialog } from "@/components/outreach/inbox/message-view-dialog";
+
+// Types
+import type {
+  EmailTemplate,
+  Campaign,
+  Message,
+  OutreachStats,
+} from "@/types/outreach";
+
+// Mock data
+const initialStats: OutreachStats = {
+  messagesSent: 234,
+  responseRate: 28,
+  interviewsScheduled: 12,
+  activeCampaigns: 3,
+  weeklyGrowth: {
+    messagesSent: 12,
+    responseRate: 3,
+    interviewsScheduled: 2,
+  },
+};
+
+const initialTemplates: EmailTemplate[] = [
   {
     id: 1,
     name: "Initial Outreach - AI Engineer",
@@ -33,6 +59,8 @@ Best regards,
 {recruiterName}`,
     usage: 45,
     responseRate: 28,
+    createdAt: "2024-01-01T00:00:00Z",
+    updatedAt: "2024-01-15T00:00:00Z",
   },
   {
     id: 2,
@@ -54,10 +82,12 @@ Thanks for your time!
 {recruiterName}`,
     usage: 32,
     responseRate: 15,
+    createdAt: "2024-01-05T00:00:00Z",
+    updatedAt: "2024-01-20T00:00:00Z",
   },
-]
+];
 
-const campaigns = [
+const initialCampaigns: Campaign[] = [
   {
     id: 1,
     name: "Senior ML Engineers - Q4 2024",
@@ -68,6 +98,10 @@ const campaigns = [
     scheduled: 8,
     startDate: "2024-10-01",
     template: "Initial Outreach - AI Engineer",
+    templateId: 1,
+    targetAudience: "ml-engineers",
+    description:
+      "Targeting senior ML engineers with 5+ years experience for our AI platform team",
   },
   {
     id: 2,
@@ -78,350 +112,315 @@ const campaigns = [
     responded: 12,
     scheduled: 4,
     startDate: "2024-09-15",
+    endDate: "2024-10-15",
     template: "Initial Outreach - AI Engineer",
+    templateId: 1,
+    targetAudience: "ai-researchers",
+    description: "PhD-level researchers for our R&D division",
   },
-]
+];
 
-const recentMessages = [
+const initialMessages: Message[] = [
   {
     id: 1,
     candidate: "Sarah Chen",
+    candidateId: 1,
     subject: "Re: Exciting AI Engineering Opportunity",
-    preview: "Thanks for reaching out! I'd be interested in learning more about the role...",
+    preview:
+      "Thanks for reaching out! I'd be interested in learning more about the role...",
     time: "2 hours ago",
     status: "replied",
     avatar: "/placeholder.svg?height=32&width=32",
+    fullContent:
+      "Thanks for reaching out! I'd be interested in learning more about the role. The opportunity sounds exciting, especially the work on cutting-edge AI/ML projects. I'm currently employed but open to discussing new opportunities. Could we schedule a call for next week?",
+    thread: [
+      {
+        id: 1,
+        from: "You",
+        content:
+          "Hi Sarah, I came across your profile and was impressed by your experience with PyTorch and LangChain. We have an exciting opportunity for a Senior ML Engineer role at TechCorp that I think would be a great fit for your background...",
+        timestamp: "2 days ago",
+        type: "sent",
+        isRead: true,
+      },
+      {
+        id: 2,
+        from: "Sarah Chen",
+        content:
+          "Thanks for reaching out! I'd be interested in learning more about the role. The opportunity sounds exciting, especially the work on cutting-edge AI/ML projects. I'm currently employed but open to discussing new opportunities. Could we schedule a call for next week?",
+        timestamp: "2 hours ago",
+        type: "received",
+        isRead: false,
+      },
+    ],
   },
   {
     id: 2,
     candidate: "Michael Rodriguez",
+    candidateId: 2,
     subject: "AI Research Scientist Position",
-    preview: "Hi! I'm currently happy in my role but would be open to discussing...",
+    preview:
+      "Hi! I'm currently happy in my role but would be open to discussing...",
     time: "1 day ago",
     status: "replied",
     avatar: "/placeholder.svg?height=32&width=32",
+    thread: [
+      {
+        id: 3,
+        from: "You",
+        content:
+          "Hi Michael, I noticed your impressive publication record in NLP and computer vision. We have a research scientist position that would allow you to continue publishing while working on applied research...",
+        timestamp: "3 days ago",
+        type: "sent",
+        isRead: true,
+      },
+      {
+        id: 4,
+        from: "Michael Rodriguez",
+        content:
+          "Hi! I'm currently happy in my role but would be open to discussing exceptional opportunities. The research focus you mentioned aligns well with my interests in NLP and computer vision. What's the research budget and publication policy?",
+        timestamp: "1 day ago",
+        type: "received",
+        isRead: false,
+      },
+    ],
   },
-  {
-    id: 3,
-    candidate: "Emily Johnson",
-    subject: "Following up on ML Engineer opportunity",
-    preview: "",
-    time: "3 days ago",
-    status: "sent",
-    avatar: "/placeholder.svg?height=32&width=32",
-  },
-]
+];
 
 export default function OutreachPage() {
-  const [selectedTemplate, setSelectedTemplate] = useState(emailTemplates[0])
-  const [newTemplate, setNewTemplate] = useState({
-    name: "",
-    subject: "",
-    content: "",
-  })
+  const { toast } = useToast();
+
+  // State management
+  const [stats] = useState<OutreachStats>(initialStats);
+  const [templates, setTemplates] = useState<EmailTemplate[]>(initialTemplates);
+  const [campaigns, setCampaigns] = useState<Campaign[]>(initialCampaigns);
+  const [messages] = useState<Message[]>(initialMessages);
+
+  // UI state
+  const [selectedTemplate, setSelectedTemplate] =
+    useState<EmailTemplate | null>(templates[0]);
+  const [selectedMessage, setSelectedMessage] = useState<Message | null>(null);
+  const [editTemplateOpen, setEditTemplateOpen] = useState(false);
+  const [editingTemplate, setEditingTemplate] = useState<EmailTemplate | null>(
+    null
+  );
+  const [messageViewOpen, setMessageViewOpen] = useState(false);
+
+  // Campaign handlers
+  const handleCreateCampaign = (
+    campaignData: Omit<
+      Campaign,
+      "id" | "sent" | "opened" | "responded" | "scheduled"
+    >
+  ) => {
+    const newCampaign: Campaign = {
+      ...campaignData,
+      id: campaigns.length + 1,
+      sent: 0,
+      opened: 0,
+      responded: 0,
+      scheduled: 0,
+    };
+    setCampaigns([...campaigns, newCampaign]);
+    toast({
+      title: "Campaign Created",
+      description: `Campaign "${newCampaign.name}" has been created successfully.`,
+    });
+  };
+
+  const handleEditCampaign = (campaign: Campaign) => {
+    // Implementation for editing campaign
+    console.log("Edit campaign:", campaign);
+    toast({
+      title: "Edit Campaign",
+      description: "Campaign editing functionality would be implemented here.",
+    });
+  };
+
+  const handleDeleteCampaign = (campaignId: number) => {
+    setCampaigns(campaigns.filter((c) => c.id !== campaignId));
+    toast({
+      title: "Campaign Deleted",
+      description: "Campaign has been deleted successfully.",
+      variant: "destructive",
+    });
+  };
+
+  const handleToggleCampaign = (campaignId: number) => {
+    setCampaigns(
+      campaigns.map((c) =>
+        c.id === campaignId
+          ? { ...c, status: c.status === "active" ? "draft" : "active" }
+          : c
+      )
+    );
+    toast({
+      title: "Campaign Updated",
+      description: "Campaign status has been updated.",
+    });
+  };
+
+  // Template handlers
+  const handleCreateTemplate = (
+    templateData: Omit<
+      EmailTemplate,
+      "id" | "usage" | "responseRate" | "createdAt" | "updatedAt"
+    >
+  ) => {
+    const newTemplate: EmailTemplate = {
+      ...templateData,
+      id: templates.length + 1,
+      usage: 0,
+      responseRate: 0,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+    setTemplates([...templates, newTemplate]);
+    toast({
+      title: "Template Created",
+      description: `Template "${newTemplate.name}" has been created successfully.`,
+    });
+  };
+
+  const handleEditTemplate = (template: EmailTemplate) => {
+    setEditingTemplate(template);
+    setEditTemplateOpen(true);
+  };
+
+  const handleUpdateTemplate = (updatedTemplate: EmailTemplate) => {
+    setTemplates(
+      templates.map((t) => (t.id === updatedTemplate.id ? updatedTemplate : t))
+    );
+    if (selectedTemplate?.id === updatedTemplate.id) {
+      setSelectedTemplate(updatedTemplate);
+    }
+    toast({
+      title: "Template Updated",
+      description: `Template "${updatedTemplate.name}" has been updated successfully.`,
+    });
+  };
+
+  const handleDuplicateTemplate = (template: EmailTemplate) => {
+    const duplicatedTemplate: EmailTemplate = {
+      ...template,
+      id: templates.length + 1,
+      name: `${template.name} (Copy)`,
+      usage: 0,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+    setTemplates([...templates, duplicatedTemplate]);
+    toast({
+      title: "Template Duplicated",
+      description: `Template "${duplicatedTemplate.name}" has been created.`,
+    });
+  };
+
+  const handleDeleteTemplate = (templateId: number) => {
+    setTemplates(templates.filter((t) => t.id !== templateId));
+    if (selectedTemplate?.id === templateId) {
+      setSelectedTemplate(templates.find((t) => t.id !== templateId) || null);
+    }
+    toast({
+      title: "Template Deleted",
+      description: "Template has been deleted successfully.",
+      variant: "destructive",
+    });
+  };
+
+  // Message handlers
+  const handleViewMessage = (message: Message) => {
+    setSelectedMessage(message);
+    setMessageViewOpen(true);
+  };
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold tracking-tight">Outreach Management</h1>
-        <p className="text-muted-foreground">Manage email campaigns, templates, and track candidate responses.</p>
-      </div>
+    <TooltipProvider>
+      <div className="space-y-6">
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight">
+            Outreach Management
+          </h1>
+          <p className="text-muted-foreground">
+            Manage email campaigns, templates, and track candidate responses.
+          </p>
+        </div>
 
-      {/* Stats Cards */}
-      <div className="grid gap-4 md:grid-cols-4">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Messages Sent</CardTitle>
-            <Mail className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">234</div>
-            <p className="text-xs text-muted-foreground">
-              <span className="text-green-600">+12%</span> from last week
-            </p>
-          </CardContent>
-        </Card>
+        {/* Stats */}
+        <OutreachStatsComponent stats={stats} />
 
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Response Rate</CardTitle>
-            <MessageSquare className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">28%</div>
-            <p className="text-xs text-muted-foreground">
-              <span className="text-green-600">+3%</span> from last week
-            </p>
-          </CardContent>
-        </Card>
+        <Tabs defaultValue="campaigns" className="space-y-4">
+          <TabsList>
+            <TabsTrigger value="campaigns">Campaigns</TabsTrigger>
+            <TabsTrigger value="templates">Templates</TabsTrigger>
+            <TabsTrigger value="compose">Compose</TabsTrigger>
+            <TabsTrigger value="inbox">Inbox</TabsTrigger>
+          </TabsList>
 
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Interviews Scheduled</CardTitle>
-            <Calendar className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">12</div>
-            <p className="text-xs text-muted-foreground">
-              <span className="text-green-600">+2</span> from last week
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Active Campaigns</CardTitle>
-            <TrendingUp className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">3</div>
-            <p className="text-xs text-muted-foreground">2 scheduled to start</p>
-          </CardContent>
-        </Card>
-      </div>
-
-      <Tabs defaultValue="campaigns" className="space-y-4">
-        <TabsList>
-          <TabsTrigger value="campaigns">Campaigns</TabsTrigger>
-          <TabsTrigger value="templates">Templates</TabsTrigger>
-          <TabsTrigger value="compose">Compose</TabsTrigger>
-          <TabsTrigger value="inbox">Inbox</TabsTrigger>
-        </TabsList>
-
-        <TabsContent value="campaigns" className="space-y-4">
-          <div className="flex justify-between items-center">
-            <h3 className="text-lg font-medium">Email Campaigns</h3>
-            <Button>
-              <Plus className="h-4 w-4 mr-2" />
-              New Campaign
-            </Button>
-          </div>
-
-          <div className="space-y-4">
-            {campaigns.map((campaign) => (
-              <Card key={campaign.id}>
-                <CardContent className="p-6">
-                  <div className="flex items-center justify-between">
-                    <div className="space-y-2">
-                      <div className="flex items-center gap-2">
-                        <h4 className="font-medium">{campaign.name}</h4>
-                        <Badge
-                          variant={campaign.status === "active" ? "default" : "secondary"}
-                          className={
-                            campaign.status === "active"
-                              ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100"
-                              : ""
-                          }
-                        >
-                          {campaign.status}
-                        </Badge>
-                      </div>
-                      <p className="text-sm text-muted-foreground">
-                        Template: {campaign.template} • Started: {campaign.startDate}
-                      </p>
-                    </div>
-                    <div className="text-right space-y-1">
-                      <div className="flex gap-4 text-sm">
-                        <span>
-                          Sent: <strong>{campaign.sent}</strong>
-                        </span>
-                        <span>
-                          Opened: <strong>{campaign.opened}</strong>
-                        </span>
-                        <span>
-                          Replied: <strong>{campaign.responded}</strong>
-                        </span>
-                        <span>
-                          Scheduled: <strong>{campaign.scheduled}</strong>
-                        </span>
-                      </div>
-                      <div className="text-xs text-muted-foreground">
-                        Response rate: {Math.round((campaign.responded / campaign.sent) * 100)}%
-                      </div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </TabsContent>
-
-        <TabsContent value="templates" className="space-y-4">
-          <div className="grid gap-6 lg:grid-cols-2">
-            <div className="space-y-4">
-              <div className="flex justify-between items-center">
-                <h3 className="text-lg font-medium">Email Templates</h3>
-                <Button size="sm">
-                  <Plus className="h-4 w-4 mr-2" />
-                  New Template
-                </Button>
-              </div>
-
-              <div className="space-y-2">
-                {emailTemplates.map((template) => (
-                  <Card
-                    key={template.id}
-                    className={`cursor-pointer transition-colors ${
-                      selectedTemplate.id === template.id
-                        ? "border-primary bg-primary/5"
-                        : "hover:border-muted-foreground/50"
-                    }`}
-                    onClick={() => setSelectedTemplate(template)}
-                  >
-                    <CardContent className="p-4">
-                      <div className="space-y-2">
-                        <h4 className="font-medium">{template.name}</h4>
-                        <div className="flex gap-4 text-xs text-muted-foreground">
-                          <span>Used {template.usage} times</span>
-                          <span>{template.responseRate}% response rate</span>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
+          <TabsContent value="campaigns" className="space-y-4">
+            <div className="flex justify-between items-center">
+              <h3 className="text-lg font-medium">Email Campaigns</h3>
+              <NewCampaignDialog
+                templates={templates}
+                onCreateCampaign={handleCreateCampaign}
+              />
             </div>
+            <CampaignList
+              campaigns={campaigns}
+              onEditCampaign={handleEditCampaign}
+              onDeleteCampaign={handleDeleteCampaign}
+              onToggleCampaign={handleToggleCampaign}
+            />
+          </TabsContent>
 
-            <Card>
-              <CardHeader>
-                <CardTitle>Template Preview</CardTitle>
-                <CardDescription>{selectedTemplate.name}</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div>
-                  <Label className="text-sm font-medium">Subject</Label>
-                  <p className="text-sm text-muted-foreground bg-muted p-2 rounded">{selectedTemplate.subject}</p>
-                </div>
-                <div>
-                  <Label className="text-sm font-medium">Content</Label>
-                  <div className="text-sm text-muted-foreground bg-muted p-3 rounded whitespace-pre-wrap">
-                    {selectedTemplate.content}
-                  </div>
-                </div>
-                <div className="flex gap-2">
-                  <Button size="sm">
-                    <Edit className="h-4 w-4 mr-2" />
-                    Edit
-                  </Button>
-                  <Button size="sm" variant="outline">
-                    <Copy className="h-4 w-4 mr-2" />
-                    Duplicate
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        </TabsContent>
-
-        <TabsContent value="compose" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>Compose Message</CardTitle>
-              <CardDescription>Send personalized outreach to candidates</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="grid gap-4 md:grid-cols-2">
-                <div className="space-y-2">
-                  <Label htmlFor="template">Template</Label>
-                  <Select>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select template" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {emailTemplates.map((template) => (
-                        <SelectItem key={template.id} value={template.id.toString()}>
-                          {template.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="candidates">Recipients</Label>
-                  <Select>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select candidates" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="saved-search">Saved Search: ML Engineers</SelectItem>
-                      <SelectItem value="shortlist">Shortlist: Q4 Candidates</SelectItem>
-                      <SelectItem value="custom">Custom Selection</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="subject">Subject</Label>
-                <Input id="subject" placeholder="Email subject line" />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="message">Message</Label>
-                <Textarea id="message" placeholder="Compose your message..." className="min-h-[200px]" />
-              </div>
-
-              <div className="flex gap-2">
-                <Button>
-                  <Send className="h-4 w-4 mr-2" />
-                  Send Now
-                </Button>
-                <Button variant="outline">Schedule Send</Button>
-                <Button variant="outline">Save Draft</Button>
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="inbox" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>Recent Messages</CardTitle>
-              <CardDescription>Latest candidate responses and outreach activity</CardDescription>
-            </CardHeader>
-            <CardContent>
+          <TabsContent value="templates" className="space-y-4">
+            <div className="grid gap-6 lg:grid-cols-2">
               <div className="space-y-4">
-                {recentMessages.map((message) => (
-                  <div
-                    key={message.id}
-                    className="flex items-start space-x-4 p-4 border rounded-lg hover:bg-muted/50 cursor-pointer"
-                  >
-                    <Avatar className="h-10 w-10">
-                      <AvatarImage src={message.avatar || "/placeholder.svg"} alt={message.candidate} />
-                      <AvatarFallback>
-                        {message.candidate
-                          .split(" ")
-                          .map((n) => n[0])
-                          .join("")}
-                      </AvatarFallback>
-                    </Avatar>
-                    <div className="flex-1 space-y-1">
-                      <div className="flex items-center justify-between">
-                        <p className="font-medium">{message.candidate}</p>
-                        <div className="flex items-center gap-2">
-                          <Badge
-                            variant={message.status === "replied" ? "default" : "secondary"}
-                            className={
-                              message.status === "replied"
-                                ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100"
-                                : ""
-                            }
-                          >
-                            {message.status}
-                          </Badge>
-                          <span className="text-xs text-muted-foreground">{message.time}</span>
-                        </div>
-                      </div>
-                      <p className="text-sm font-medium text-muted-foreground">{message.subject}</p>
-                      {message.preview && <p className="text-sm text-muted-foreground">{message.preview}</p>}
-                    </div>
-                  </div>
-                ))}
+                <div className="flex justify-between items-center">
+                  <h3 className="text-lg font-medium">Email Templates</h3>
+                  <NewTemplateDialog onCreateTemplate={handleCreateTemplate} />
+                </div>
+                <TemplateList
+                  templates={templates}
+                  selectedTemplate={selectedTemplate}
+                  onSelectTemplate={setSelectedTemplate}
+                />
               </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-      </Tabs>
-    </div>
-  )
+              <TemplatePreview
+                template={selectedTemplate}
+                onEditTemplate={handleEditTemplate}
+                onDuplicateTemplate={handleDuplicateTemplate}
+                onDeleteTemplate={handleDeleteTemplate}
+              />
+            </div>
+          </TabsContent>
+
+          <TabsContent value="compose" className="space-y-4">
+            <ComposeMessage templates={templates} />
+          </TabsContent>
+
+          <TabsContent value="inbox" className="space-y-4">
+            <MessageList
+              messages={messages}
+              onMessageClick={handleViewMessage}
+            />
+          </TabsContent>
+        </Tabs>
+
+        {/* Dialogs */}
+        <EditTemplateDialog
+          template={editingTemplate}
+          open={editTemplateOpen}
+          onOpenChange={setEditTemplateOpen}
+          onUpdateTemplate={handleUpdateTemplate}
+        />
+
+        <MessageViewDialog
+          message={selectedMessage}
+          open={messageViewOpen}
+          onOpenChange={setMessageViewOpen}
+        />
+      </div>
+    </TooltipProvider>
+  );
 }
