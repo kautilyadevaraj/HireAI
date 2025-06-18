@@ -1,7 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { unlink } from 'fs/promises';
-import { join } from 'path';
-import { existsSync } from 'fs';
 
 export async function DELETE(request: NextRequest) {
   try {
@@ -12,27 +9,19 @@ export async function DELETE(request: NextRequest) {
       return NextResponse.json({ error: 'Filename is required' }, { status: 400 });
     }
 
-    // Construct the file path
-    const uploadsDir = join(process.cwd(), 'uploads');
-    const filepath = join(uploadsDir, filename);
-
-    // Check if file exists
-    if (!existsSync(filepath)) {
-      return NextResponse.json({ error: 'File not found' }, { status: 404 });
-    }
-
-    // Delete the file
-    await unlink(filepath);
-
+    // In serverless environments like Vercel, files are processed in memory only
+    // No actual file deletion is needed since files aren't saved to filesystem
+    // This endpoint exists for compatibility with the frontend delete functionality
+    
     return NextResponse.json({
       success: true,
-      message: 'File deleted successfully'
+      message: 'File reference removed successfully'
     });
 
   } catch (error) {
     console.error('Delete error:', error);
     return NextResponse.json({ 
-      error: 'Failed to delete file' 
+      error: 'Failed to remove file reference' 
     }, { status: 500 });
   }
 } 
