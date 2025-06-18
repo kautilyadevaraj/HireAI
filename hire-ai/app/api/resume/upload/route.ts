@@ -1,9 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { GoogleGenerativeAI } from '@google/generative-ai';
-import { writeFile, mkdir } from 'fs/promises';
-import { join } from 'path';
-import { existsSync } from 'fs';
 import { ResumeStructuredData } from '@/types/resume';
+
+// Verify environment variable
+if (!process.env.GEMINI_API_KEY) {
+  console.error('GEMINI_API_KEY environment variable is not set');
+}
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
 
@@ -30,21 +32,13 @@ export async function POST(request: NextRequest) {
       }, { status: 400 });
     }
 
-    // Create uploads directory if it doesn't exist
-    const uploadsDir = join(process.cwd(), 'uploads');
-    if (!existsSync(uploadsDir)) {
-      await mkdir(uploadsDir, { recursive: true });
-    }
-
-    // Generate unique filename
+    // Generate unique filename for reference (no file saving in serverless)
     const timestamp = Date.now();
     const filename = `${timestamp}_${file.name.replace(/\s+/g, '_')}`;
-    const filepath = join(uploadsDir, filename);
 
-    // Save file
+    // Convert file to buffer for processing (in memory only)
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
-    await writeFile(filepath, buffer);
 
     // Extract text using Gemini API
     let extractedText = '';
@@ -162,7 +156,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({
       success: true,
-      filename: filename,
+      filename: filename, // Reference only, no actual file saved
       originalName: file.name,
       size: file.size,
       extractedText: extractedText,
@@ -172,8 +166,16 @@ export async function POST(request: NextRequest) {
 
   } catch (error) {
     console.error('Upload error:', error);
+    
+    // More detailed error logging for debugging
+    if (error instanceof Error) {
+      console.error('Error message:', error.message);
+      console.error('Error stack:', error.stack);
+    }
+    
     return NextResponse.json({ 
-      error: 'Internal server error' 
+      error: 'Internal server error',
+      details: process.env.NODE_ENV === 'development' ? (error instanceof Error ? error.message : 'Unknown error') : undefined
     }, { status: 500 });
   }
 } 
