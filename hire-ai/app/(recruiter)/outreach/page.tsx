@@ -420,6 +420,7 @@ export default function OutreachPage() {
                         <MessageList
                             messages={messages}
                             onMessageClick={handleViewMessage}
+                            useRealGmail={true}
                         />
                     </TabsContent>
                 </Tabs>
