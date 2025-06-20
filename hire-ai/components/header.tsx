@@ -81,7 +81,10 @@ export function Header() {
                             <User className="mr-2 h-4 w-4" />
                             <span>Profile</span>
                         </DropdownMenuItem>
-                        <DropdownMenuItem className="cursor-pointer transition-all duration-200 hover:bg-primary/5 hover:text-primary focus:bg-primary/5 focus:text-primary" asChild>
+                        <DropdownMenuItem
+                            className="cursor-pointer transition-all duration-200 hover:bg-primary/5 hover:text-primary focus:bg-primary/5 focus:text-primary"
+                            asChild
+                        >
                             <Link href="/settings">
                                 <Settings className="mr-2 h-4 w-4" />
                                 <span>Settings</span>
