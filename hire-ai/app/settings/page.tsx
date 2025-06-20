@@ -14,19 +14,7 @@ import type { User, CandidateProfile } from "@/types/user";
 import { useToast } from "@/hooks/use-toast";
 import { getUserRole } from "@/lib/utils";
 import { createClient } from "@/utils/supabase/client";
-
-// Mock data - in real app this would come from API/database
-const mockUser: User = {
-    id: "1",
-    email: "sarah.chen@email.com",
-    firstName: "Sarah",
-    lastName: "Chen",
-    role: "candidate",
-    phone: "+1 (555) 123-4567",
-    location: "San Francisco, CA",
-    title: "Senior ML Engineer",
-    bio: "Experienced ML engineer with expertise in deep learning and NLP.",
-};
+import { useUser } from "@/hooks/use-user";
 
 const mockCandidateProfile: CandidateProfile = {
     userId: "1",
@@ -41,17 +29,55 @@ const mockCandidateProfile: CandidateProfile = {
 };
 
 export default function CandidateSettingsPage() {
-    const [user, setUser] = useState<User>(mockUser);
+    const { user: fetchedUser, loading: userLoading } = useUser();
+    const [user, setUser] = useState<User | null>(null);
     const [candidateProfile, setCandidateProfile] =
         useState<CandidateProfile>(mockCandidateProfile);
     const router = useRouter();
     const { toast } = useToast();
     const [role, setRole] = useState<string | null>(null);
 
-    const handleUserSave = (userData: Partial<User>) => {
-        setUser({ ...user, ...userData });
-        // In real app, save to API
-        console.log("Saving user data:", userData);
+    // Update local user state when fetched user changes
+    useEffect(() => {
+        if (fetchedUser) {
+            setUser(fetchedUser);
+        }
+    }, [fetchedUser]);
+
+    const handleUserSave = async (userData: Partial<User>) => {
+        if (!user) return;
+
+        try {
+            const supabase = createClient();
+            
+            // Update display name in Supabase auth metadata
+            const fullName = `${userData.firstName || user.firstName} ${userData.lastName || user.lastName}`.trim();
+            
+            const { error: updateError } = await supabase.auth.updateUser({
+                data: {
+                    display_name: fullName,
+                }
+            });
+
+            if (updateError) {
+                throw updateError;
+            }
+
+            // Update local state
+            setUser({ ...user, ...userData });
+
+            toast({
+                title: "Profile Updated",
+                description: "Your profile has been saved successfully.",
+            });
+        } catch (error) {
+            console.error("Error saving user data:", error);
+            toast({
+                title: "Error",
+                description: "Failed to save profile. Please try again.",
+                variant: "destructive",
+            });
+        }
     };
 
     const handleProfileSave = (profileData: Partial<CandidateProfile>) => {
@@ -95,6 +121,18 @@ export default function CandidateSettingsPage() {
 
         checkRole();
     }, []);
+
+    if (userLoading || !user) {
+        return (
+            <div className="container mx-auto p-6 max-w-4xl">
+                <div className="flex items-center justify-center min-h-[400px]">
+                    <div className="text-center">
+                        <p className="text-muted-foreground">Loading your profile...</p>
+                    </div>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="container mx-auto p-6 max-w-4xl">
