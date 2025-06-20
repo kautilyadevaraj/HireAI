@@ -10,6 +10,7 @@ import {
     Search,
     Settings,
     Home,
+    Target,
 } from "lucide-react";
 import {
     Sidebar,
@@ -38,14 +39,14 @@ const menuItems = [
         icon: Search,
     },
     {
-        title: "Candidate Pool",
-        url: "/candidates",
-        icon: Users,
-    },
-    {
         title: "Resume Parser",
         url: "/resume-parser",
         icon: FileText,
+    },
+    {
+        title: "JD-Resume Matching",
+        url: "/jd-matcher",
+        icon: Target,
     },
     {
         title: "Analytics",

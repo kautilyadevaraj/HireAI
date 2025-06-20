@@ -13,10 +13,14 @@ export async function POST(request: NextRequest) {
             );
         }
 
+        // Dynamically determine redirect URI
+        const redirectUri = process.env.NEXT_PUBLIC_GOOGLE_REDIRECT_URI || 
+                           `${request.nextUrl.origin}/api/gmail/callback`;
+
         const oauth2Client = new OAuth2Client(
             process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
             process.env.GOOGLE_CLIENT_SECRET,
-            process.env.NEXT_PUBLIC_GOOGLE_REDIRECT_URI
+            redirectUri
         );
 
         oauth2Client.setCredentials({

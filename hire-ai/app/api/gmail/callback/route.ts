@@ -1,13 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { OAuth2Client } from 'google-auth-library';
 
-async function exchangeCodeForTokens(code: string) {
+async function exchangeCodeForTokens(code: string, redirectUri: string) {
     try {
         console.log('Exchanging code for tokens...');
         const oauth2Client = new OAuth2Client(
             process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
             process.env.GOOGLE_CLIENT_SECRET,
-            process.env.NEXT_PUBLIC_GOOGLE_REDIRECT_URI
+            redirectUri
         );
 
         const { tokens } = await oauth2Client.getToken(code);
@@ -37,12 +37,17 @@ export async function GET(request: NextRequest) {
         const code = searchParams.get('code');
         const error = searchParams.get('error');
         const state = searchParams.get('state');
+        
+        // Dynamically determine redirect URI
+        const redirectUri = process.env.NEXT_PUBLIC_GOOGLE_REDIRECT_URI || 
+                           `${request.nextUrl.origin}/api/gmail/callback`;
 
         console.log('Callback params:', { 
             hasCode: !!code, 
             error, 
             state,
-            origin: request.nextUrl.origin 
+            origin: request.nextUrl.origin,
+            redirectUri: redirectUri
         });
 
         if (error) {
@@ -59,7 +64,7 @@ export async function GET(request: NextRequest) {
             );
         }
 
-        const result = await exchangeCodeForTokens(code);
+        const result = await exchangeCodeForTokens(code, redirectUri);
 
         if (result.success && result.tokens) {
             console.log('Token exchange successful, creating HTML redirect...');
@@ -111,6 +116,10 @@ export async function POST(request: NextRequest) {
         console.log('Gmail callback POST request received');
         const body = await request.json();
         const { code } = body;
+        
+        // Dynamically determine redirect URI
+        const redirectUri = process.env.NEXT_PUBLIC_GOOGLE_REDIRECT_URI || 
+                           `${request.nextUrl.origin}/api/gmail/callback`;
 
         if (!code) {
             return NextResponse.json(
@@ -119,7 +128,7 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        const result = await exchangeCodeForTokens(code);
+        const result = await exchangeCodeForTokens(code, redirectUri);
         return NextResponse.json(result);
 
     } catch (error) {

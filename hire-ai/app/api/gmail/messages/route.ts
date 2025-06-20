@@ -14,9 +14,9 @@ export async function GET(request: NextRequest) {
         }
 
         const auth = new google.auth.OAuth2(
-            process.env.GOOGLE_CLIENT_ID,
+            process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
             process.env.GOOGLE_CLIENT_SECRET,
-            process.env.GOOGLE_REDIRECT_URI
+            process.env.NEXT_PUBLIC_GOOGLE_REDIRECT_URI || `${request.nextUrl.origin}/api/gmail/callback`
         );
 
         auth.setCredentials({

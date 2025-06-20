@@ -811,9 +811,6 @@ export default function ResumeParserPage() {
                                     </Tabs>
 
                                     <div className="flex gap-3 pt-6 border-t border-border/30">
-                                        <Button className="button-elegant bg-primary text-primary-foreground hover:bg-primary/90">
-                                            Add to Candidate Pool
-                                        </Button>
                                         <Button
                                             variant="outline"
                                             className="button-elegant border-border/60 hover:border-primary/30 hover:bg-primary/5"
