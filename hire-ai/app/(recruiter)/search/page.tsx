@@ -95,14 +95,34 @@ export default function SearchPage() {
         const locationKeywords = [
             'bangalore', 'mumbai', 'delhi', 'chennai', 'hyderabad', 'pune', 'kolkata', 
             'ahmedabad', 'kochi', 'jaipur', 'mysore', 'coimbatore', 'thiruvananthapuram',
-            'bay area', 'silicon valley', 'california', 'new york', 'london', 'remote'
+            'bay area', 'silicon valley', 'california', 'new york', 'london', 'remote',
+            'gurgaon', 'noida', 'indore', 'bhubaneswar', 'chandigarh', 'nagpur', 'surat'
         ];
         
-        // Job title patterns
+        // Job title patterns - expanded for all fields
         const jobTitleKeywords = [
-            'engineer', 'developer', 'manager', 'analyst', 'designer', 'architect',
-            'lead', 'senior', 'junior', 'principal', 'director', 'consultant',
-            'specialist', 'administrator', 'coordinator', 'executive'
+            // Technology
+            'engineer', 'developer', 'architect', 'devops', 'data scientist', 'ai', 'ml',
+            // Product & Management
+            'product manager', 'manager', 'director', 'analyst', 'lead', 'senior', 'junior', 
+            'principal', 'consultant', 'specialist', 'coordinator', 'executive',
+            // Sales & Marketing
+            'sales', 'marketing', 'account', 'business development', 'growth', 'digital marketing',
+            'content', 'social media', 'seo', 'sem', 'brand', 'performance marketing',
+            // Finance & Operations
+            'financial', 'finance', 'controller', 'cfo', 'operations', 'supply chain', 'logistics',
+            'audit', 'risk', 'treasury', 'budget', 'investment', 'credit',
+            // HR & Legal
+            'hr', 'human resources', 'talent', 'recruiter', 'recruiting', 'legal', 'counsel',
+            'compliance', 'contract', 'regulatory', 'employment', 'benefits',
+            // Design & Creative
+            'designer', 'design', 'creative', 'ui', 'ux', 'visual', 'graphic', 'brand designer',
+            'art director', 'motion graphics', 'interaction design',
+            // Consulting & Strategy
+            'consultant', 'strategy', 'transformation', 'process improvement', 'change management',
+            // Healthcare & Education
+            'healthcare', 'medical', 'clinical', 'pharmaceutical', 'training', 'learning',
+            'education', 'curriculum', 'instructional'
         ];
         
         // Experience patterns
@@ -112,19 +132,62 @@ export default function SearchPage() {
             /(\d+)\+?\s*(year|yr|yrs|years?)/i
         ];
         
-        // Industry patterns
+        // Industry patterns - greatly expanded
         const industryKeywords = [
-            'fintech', 'finance', 'banking', 'tech', 'technology', 'startup',
-            'healthcare', 'pharma', 'retail', 'ecommerce', 'automotive',
-            'consulting', 'education', 'government', 'media', 'gaming'
+            // Technology
+            'fintech', 'tech', 'technology', 'startup', 'saas', 'software', 'it',
+            // Finance & Banking
+            'finance', 'banking', 'financial services', 'insurance', 'investment',
+            'private equity', 'venture capital', 'asset management',
+            // Consulting & Professional Services
+            'consulting', 'professional services', 'advisory', 'strategy',
+            // Healthcare & Pharma
+            'healthcare', 'pharma', 'pharmaceutical', 'medical', 'biotech', 'life sciences',
+            // E-commerce & Retail
+            'ecommerce', 'e-commerce', 'retail', 'consumer goods', 'fmcg',
+            // Manufacturing & Industrial
+            'manufacturing', 'automotive', 'industrial', 'chemicals', 'steel', 'textiles',
+            // Media & Entertainment
+            'media', 'entertainment', 'gaming', 'publishing', 'advertising', 'marketing',
+            // Education & Training
+            'education', 'edtech', 'training', 'learning', 'academic',
+            // Government & Public Sector
+            'government', 'public sector', 'ngo', 'non-profit',
+            // Real Estate & Construction
+            'real estate', 'construction', 'infrastructure', 'property',
+            // Energy & Utilities
+            'energy', 'utilities', 'oil', 'gas', 'renewable', 'solar', 'wind'
         ];
         
-        // Skills patterns
+        // Skills patterns - expanded for all fields
         const skillKeywords = [
+            // Technology Skills
             'react', 'angular', 'vue', 'javascript', 'typescript', 'python', 'java',
             'node', 'express', 'spring', 'django', 'mongodb', 'sql', 'postgresql',
             'aws', 'azure', 'docker', 'kubernetes', 'git', 'agile', 'scrum',
-            'machine learning', 'ai', 'data science', 'devops', 'frontend', 'backend'
+            'machine learning', 'ai', 'data science', 'devops', 'frontend', 'backend',
+            // Product & Analytics
+            'product management', 'analytics', 'data analysis', 'market research',
+            'user research', 'a/b testing', 'roadmap', 'wireframing', 'prototyping',
+            // Marketing & Sales
+            'digital marketing', 'seo', 'sem', 'google ads', 'facebook ads', 'content marketing',
+            'email marketing', 'social media', 'crm', 'salesforce', 'hubspot', 'lead generation',
+            'account management', 'business development', 'sales strategy',
+            // Finance & Operations
+            'financial modeling', 'excel', 'powerpoint', 'budgeting', 'forecasting',
+            'financial analysis', 'sap', 'oracle', 'accounting', 'audit', 'compliance',
+            'supply chain', 'logistics', 'operations', 'process improvement', 'lean six sigma',
+            // HR & Legal
+            'talent acquisition', 'recruiting', 'hris', 'performance management',
+            'employee relations', 'compensation', 'benefits', 'learning development',
+            'contract law', 'corporate law', 'compliance', 'legal research',
+            // Design & Creative
+            'figma', 'sketch', 'adobe creative suite', 'photoshop', 'illustrator',
+            'ui design', 'ux design', 'visual design', 'graphic design', 'brand design',
+            'prototyping', 'user experience', 'design systems', 'wireframing',
+            // Consulting & Strategy
+            'strategy development', 'business analysis', 'change management',
+            'project management', 'stakeholder management', 'process consulting'
         ];
 
         const detected = {
