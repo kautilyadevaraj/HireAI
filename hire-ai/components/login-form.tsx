@@ -36,9 +36,6 @@ export function LoginForm({ className, ...props }: React.ComponentProps<"div">) 
                         </div>
                         <span className="sr-only">HeadRoom</span>
                     </a>
-<<<<<<< Updated upstream
-                    <h1 className="text-xl font-bold">Welcome to HireAI</h1>
-=======
                     <h1 className="text-xl font-bold">Welcome to HeadRoom</h1>
                     <div className="text-center text-sm">
                         Don&apos;t have an account?{" "}
@@ -46,7 +43,6 @@ export function LoginForm({ className, ...props }: React.ComponentProps<"div">) 
                             Sign up
                         </a>
                     </div>
->>>>>>> Stashed changes
                 </div>
 
                 {/* Email/Password Login Form */}
