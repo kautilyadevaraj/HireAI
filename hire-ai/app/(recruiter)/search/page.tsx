@@ -565,7 +565,7 @@ export default function SearchPage() {
             <div>
                 <h1 className="text-2xl font-semibold">Search Candidates</h1>
                 <p className="text-muted-foreground">
-                    Find the perfect talent using AI-powered search
+                                            Find the perfect talent using smart search
                 </p>
                 <div className="flex items-center gap-4 mt-2 text-sm text-muted-foreground">
                     <span className="flex items-center gap-1">

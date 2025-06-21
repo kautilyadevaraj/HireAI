@@ -7,8 +7,8 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent } from "@/components/ui/card";
-import { Briefcase, GraduationCap, Check } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Briefcase, GraduationCap, Check, Sparkles, Users, Target } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
 
 export default function SetupForm() {
@@ -71,39 +71,73 @@ export default function SetupForm() {
         {
             value: "recruiter",
             title: "Recruiter",
-            description: "I'm looking to hire talent",
+            description: "Find and recruit top talent with advanced tools",
+            features: ["Smart candidate search", "Resume parsing & matching", "Automated outreach campaigns"],
             icon: Briefcase,
-            gradient: "from-blue-500 to-purple-600",
+            gradient: "from-blue-500 via-blue-600 to-purple-600",
+            accent: "border-blue-500/20 hover:border-blue-500/40",
         },
         {
             value: "candidate",
             title: "Candidate",
-            description: "I'm looking for opportunities",
+            description: "Discover your next career opportunity",
+            features: ["Personalized job recommendations", "Skills assessment tools", "Direct recruiter connections"],
             icon: GraduationCap,
-            gradient: "from-green-500 to-teal-600",
+            gradient: "from-emerald-500 via-teal-600 to-cyan-600",
+            accent: "border-emerald-500/20 hover:border-emerald-500/40",
         },
     ];
 
     return (
-        <div className="w-full max-w-2xl">
-            <div className="text-center mb-8">
-                <h1 className="text-3xl font-bold mb-2 text-primary">
-                    Welcome! Let's get you set up.
+        <div className="space-y-8">
+            {/* Header Section */}
+            <div 
+                className="text-center space-y-4"
+                style={{
+                    animation: "elegant-fade-in 600ms var(--ease-out-cubic)",
+                }}
+            >
+                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-primary font-medium text-sm">
+                    <Sparkles className="h-4 w-4" />
+                    Welcome to HeadRoom
+                </div>
+                <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">
+                    Let's personalize your experience
                 </h1>
-                <p className="text-gray-400">
-                    Tell us a bit about yourself to personalize your experience
+                <p className="text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+                    Tell us about yourself so we can tailor HeadRoom to your needs and help you achieve your goals
                 </p>
             </div>
 
-            <Card className="shadow-xl bg-card border-2">
-                <CardContent className="p-8">
+            {/* Main Form Card */}
+            <Card 
+                className="card-elegant border-border/50 bg-card/50 backdrop-blur-sm shadow-2xl"
+                style={{
+                    animationDelay: "200ms",
+                    animation: "elegant-slide-in 700ms var(--ease-out-cubic) forwards",
+                    opacity: 0,
+                }}
+            >
+                <CardHeader className="text-center pb-8">
+                    <CardTitle className="text-2xl">Setup Your Profile</CardTitle>
+                    <CardDescription className="text-base text-muted-foreground/80">
+                        This will only take a moment
+                    </CardDescription>
+                </CardHeader>
+                
+                <CardContent className="space-y-8 px-8 pb-8">
                     <form onSubmit={handleSubmit} className="space-y-8">
                         {/* Full Name Input */}
-                        <div className="space-y-3">
-                            <Label
-                                htmlFor="fullName"
-                                className="text-base font-medium"
-                            >
+                        <div 
+                            className="space-y-3"
+                            style={{
+                                animationDelay: "400ms",
+                                animation: "elegant-fade-in 500ms var(--ease-out-cubic) forwards",
+                                opacity: 0,
+                            }}
+                        >
+                            <Label htmlFor="fullName" className="text-base font-medium flex items-center gap-2">
+                                <Users className="h-4 w-4 text-primary" />
                                 Full Name
                             </Label>
                             <Input
@@ -112,54 +146,77 @@ export default function SetupForm() {
                                 onChange={(e) => setFullName(e.target.value)}
                                 placeholder="Enter your full name"
                                 required
-                                className="h-12 text-base border-2"
+                                className="input-elegant h-12 text-base border-2 bg-background/50"
                             />
                         </div>
 
                         {/* Role Selection */}
-                        <div className="space-y-4">
-                            <Label className="text-base font-medium">
+                        <div 
+                            className="space-y-6"
+                            style={{
+                                animationDelay: "500ms",
+                                animation: "elegant-fade-in 500ms var(--ease-out-cubic) forwards",
+                                opacity: 0,
+                            }}
+                        >
+                            <Label className="text-base font-medium flex items-center gap-2">
+                                <Target className="h-4 w-4 text-primary" />
                                 What best describes you?
                             </Label>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                {roleOptions.map((option) => {
+                            
+                            <div className="grid gap-6 md:grid-cols-2">
+                                {roleOptions.map((option, index) => {
                                     const IconComponent = option.icon;
                                     const isSelected = role === option.value;
 
                                     return (
                                         <Card
                                             key={option.value}
-                                            className={`relative cursor-pointer transition-all duration-200 hover:scale-105 hover:shadow-lg ${
+                                            className={`card-elegant relative cursor-pointer transition-all duration-400 group ${
                                                 isSelected
-                                                    ? "border-green-500 shadow-lg"
-                                                    : "border-2 hover:border-gray-300"
+                                                    ? `border-primary/40 shadow-lg shadow-primary/10 ${option.accent.split(' ')[0]}`
+                                                    : `border-border/50 hover:border-border ${option.accent}`
                                             }`}
-                                            onClick={() =>
-                                                setRole(option.value)
-                                            }
+                                            onClick={() => setRole(option.value)}
+                                            style={{
+                                                animationDelay: `${600 + index * 100}ms`,
+                                                animation: "elegant-scale-in 500ms var(--ease-out-cubic) forwards",
+                                                opacity: 0,
+                                            }}
                                         >
-                                            <CardContent className="p-6 text-center">
+                                            <CardContent className="p-6 space-y-6">
                                                 {/* Selected Indicator */}
                                                 {isSelected && (
-                                                    <div className="absolute top-3 right-3 w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
-                                                        <Check className="w-4 h-4 text-white" />
+                                                    <div className="absolute top-4 right-4 w-6 h-6 bg-primary rounded-full flex items-center justify-center shadow-lg">
+                                                        <Check className="w-4 h-4 text-primary-foreground" />
                                                     </div>
                                                 )}
 
                                                 {/* Icon with Gradient Background */}
-                                                <div
-                                                    className={`w-20 h-20 mx-auto mb-4 rounded-full bg-gradient-to-r ${option.gradient} flex items-center justify-center`}
-                                                >
-                                                    <IconComponent className="w-10 h-10 text-white" />
+                                                <div className="text-center space-y-4">
+                                                    <div
+                                                        className={`w-16 h-16 mx-auto rounded-2xl bg-gradient-to-br ${option.gradient} flex items-center justify-center shadow-lg group-hover:scale-105 transition-transform duration-300`}
+                                                    >
+                                                        <IconComponent className="w-8 h-8 text-white" />
+                                                    </div>
+
+                                                    <div className="space-y-2">
+                                                        <h3 className="text-xl font-semibold">{option.title}</h3>
+                                                        <p className="text-muted-foreground text-sm leading-relaxed">
+                                                            {option.description}
+                                                        </p>
+                                                    </div>
                                                 </div>
 
-                                                {/* Title and Description */}
-                                                <h3 className="text-xl font-semibold mb-2">
-                                                    {option.title}
-                                                </h3>
-                                                <p className="text-gray-400 text-sm">
-                                                    {option.description}
-                                                </p>
+                                                {/* Features List */}
+                                                <div className="space-y-2 pt-2 border-t border-border/30">
+                                                    {option.features.map((feature, idx) => (
+                                                        <div key={idx} className="flex items-center gap-2 text-xs text-muted-foreground">
+                                                            <div className="w-1 h-1 bg-primary/60 rounded-full" />
+                                                            {feature}
+                                                        </div>
+                                                    ))}
+                                                </div>
                                             </CardContent>
                                         </Card>
                                     );
@@ -169,8 +226,16 @@ export default function SetupForm() {
 
                         {/* Error Message */}
                         {error && (
-                            <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-                                <p className="text-red-600 text-sm font-medium">
+                            <div 
+                                className="rounded-lg border border-destructive/20 bg-destructive/5 p-4"
+                                style={{
+                                    animation: "elegant-fade-in 300ms var(--ease-out-cubic)",
+                                }}
+                            >
+                                <p className="text-destructive text-sm font-medium flex items-center gap-2">
+                                    <div className="w-4 h-4 rounded-full bg-destructive/20 flex items-center justify-center">
+                                        <div className="w-2 h-2 rounded-full bg-destructive" />
+                                    </div>
                                     {error}
                                 </p>
                             </div>
@@ -179,21 +244,50 @@ export default function SetupForm() {
                         {/* Submit Button */}
                         <Button
                             type="submit"
-                            className="w-full h-12 text-base font-medium bg-gradient-to-r from-red-600 to-pink-600 hover:from-red-700 hover:to-pink-700 transition-all duration-200"
-                            disabled={isLoading}
+                            className="button-elegant w-full h-12 text-base font-medium bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg hover:shadow-xl transition-all duration-300"
+                            disabled={isLoading || !fullName || !role}
+                            style={{
+                                animationDelay: "800ms",
+                                animation: "elegant-fade-in 500ms var(--ease-out-cubic) forwards",
+                                opacity: 0,
+                            }}
                         >
                             {isLoading ? (
-                                <div className="flex items-center gap-2">
-                                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                                <div className="flex items-center gap-3">
+                                    <div className="w-4 h-4 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin" />
                                     Setting up your account...
                                 </div>
                             ) : (
-                                "Complete Setup"
+                                <div className="flex items-center gap-2">
+                                    <Sparkles className="w-4 h-4" />
+                                    Complete Setup
+                                </div>
                             )}
                         </Button>
                     </form>
                 </CardContent>
             </Card>
+
+            {/* Footer */}
+            <div 
+                className="text-center text-sm text-muted-foreground/60"
+                style={{
+                    animationDelay: "900ms",
+                    animation: "elegant-fade-in 500ms var(--ease-out-cubic) forwards",
+                    opacity: 0,
+                }}
+            >
+                <p>
+                    By continuing, you agree to our{" "}
+                    <a href="#" className="text-primary hover:text-primary/80 underline underline-offset-4 transition-colors">
+                        Terms of Service
+                    </a>{" "}
+                    and{" "}
+                    <a href="#" className="text-primary hover:text-primary/80 underline underline-offset-4 transition-colors">
+                        Privacy Policy
+                    </a>
+                </p>
+            </div>
         </div>
     );
 }

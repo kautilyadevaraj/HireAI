@@ -194,7 +194,7 @@ export default function JDMatcherPage() {
                     </h1>
                 </div>
                 <p className="text-muted-foreground">
-                    Upload a job description and multiple resumes to get AI-powered matching scores and hiring recommendations.
+                    Upload a job description and multiple resumes to get smart matching scores and recruitment recommendations.
                 </p>
             </div>
 

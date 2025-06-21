@@ -34,9 +34,19 @@ export function LoginForm({ className, ...props }: React.ComponentProps<"div">) 
                         <div className="flex size-8 items-center justify-center rounded-md">
                             <GalleryVerticalEnd className="size-6" />
                         </div>
-                        <span className="sr-only">HireAI</span>
+                        <span className="sr-only">HeadRoom</span>
                     </a>
+<<<<<<< Updated upstream
                     <h1 className="text-xl font-bold">Welcome to HireAI</h1>
+=======
+                    <h1 className="text-xl font-bold">Welcome to HeadRoom</h1>
+                    <div className="text-center text-sm">
+                        Don&apos;t have an account?{" "}
+                        <a href="#" className="underline underline-offset-4">
+                            Sign up
+                        </a>
+                    </div>
+>>>>>>> Stashed changes
                 </div>
 
                 {/* Email/Password Login Form */}

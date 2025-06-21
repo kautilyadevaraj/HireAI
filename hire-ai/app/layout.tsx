@@ -11,7 +11,7 @@ import { Toaster } from "@/components/ui/toaster";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-    title: "HireAI - AI-Powered Hiring Platform",
+    title: "HeadRoom - Next-Generation Talent Platform",
     description:
         "Find, screen, and manage talent, candidates with advanced AI tools",
 };
@@ -28,7 +28,7 @@ export default function RootLayout({
                     attribute="class"
                     defaultTheme="system"
                     enableSystem
-                    storageKey="hireai-theme"
+                    storageKey="headroom-theme"
                 >
                     {children}
                     <Toaster />

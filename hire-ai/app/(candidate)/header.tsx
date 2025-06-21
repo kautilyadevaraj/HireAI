@@ -30,7 +30,7 @@ export function Header() {
         <header className="flex h-14 items-center justify-between gap-4 bg-background/95 backdrop-blur-md supports-[backdrop-filter]:bg-background/60 px-3 sticky top-0 z-50">
             {/* Left side: App name */}
             <div className="flex items-center">
-                <h1 className="text-lg font-semibold">HireAI</h1>
+                <h1 className="text-lg font-semibold">HeadRoom</h1>
             </div>
 
             {/* Right side: Theme toggle, notifications, user menu */}
