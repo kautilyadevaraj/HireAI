@@ -37,12 +37,6 @@ export function LoginForm({ className, ...props }: React.ComponentProps<"div">) 
                         <span className="sr-only">HeadRoom</span>
                     </a>
                     <h1 className="text-xl font-bold">Welcome to HeadRoom</h1>
-                    <div className="text-center text-sm">
-                        Don&apos;t have an account?{" "}
-                        <a href="#" className="underline underline-offset-4">
-                            Sign up
-                        </a>
-                    </div>
                 </div>
 
                 {/* Email/Password Login Form */}
