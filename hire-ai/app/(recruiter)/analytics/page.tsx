@@ -352,7 +352,7 @@ export default function AnalyticsPage() {
                             <CardHeader>
                                 <CardTitle>Bias Detection</CardTitle>
                                 <CardDescription>
-                                    AI-powered bias analysis in hiring decisions
+                                    Smart bias analysis in hiring decisions
                                 </CardDescription>
                             </CardHeader>
                             <CardContent className="space-y-4">

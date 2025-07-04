@@ -16,13 +16,21 @@ import { Badge } from "@/components/ui/badge";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { logout } from "@/app/login/actions";
 import Link from "next/link";
+import { useUser } from "@/hooks/use-user";
 
 export function Header() {
+    const { user, loading } = useUser();
+
+    // Generate initials from name
+    const getInitials = (firstName: string, lastName: string) => {
+        return `${firstName[0] || ''}${lastName[0] || ''}`.toUpperCase();
+    };
+
     return (
         <header className="flex h-14 items-center justify-between gap-4 bg-background/95 backdrop-blur-md supports-[backdrop-filter]:bg-background/60 px-3 sticky top-0 z-50">
             {/* Left side: App name */}
             <div className="flex items-center">
-                <h1 className="text-lg font-semibold">HireAI</h1>
+                <h1 className="text-lg font-semibold">HeadRoom</h1>
             </div>
 
             {/* Right side: Theme toggle, notifications, user menu */}
@@ -48,11 +56,11 @@ export function Header() {
                         >
                             <Avatar className="h-8 w-8 ring-0 transition-all duration-300 hover:ring-2 hover:ring-primary/20">
                                 <AvatarImage
-                                    src="/placeholder.svg?height=32&width=32"
+                                    src={user?.avatar || "/placeholder.svg?height=32&width=32"}
                                     alt="User"
                                 />
                                 <AvatarFallback className="bg-primary/10 text-primary font-medium text-xs">
-                                    JD
+                                    {user ? getInitials(user.firstName, user.lastName) : 'U'}
                                 </AvatarFallback>
                             </Avatar>
                         </Button>
@@ -65,10 +73,10 @@ export function Header() {
                         <DropdownMenuLabel className="font-normal">
                             <div className="flex flex-col space-y-1">
                                 <p className="text-sm font-medium leading-none">
-                                    John Doe
+                                    {loading ? "Loading..." : user ? `${user.firstName} ${user.lastName}`.trim() || "No name set" : "Guest"}
                                 </p>
                                 <p className="text-xs leading-none text-muted-foreground/70">
-                                    john@company.com
+                                    {loading ? "..." : user?.email || "No email"}
                                 </p>
                             </div>
                         </DropdownMenuLabel>

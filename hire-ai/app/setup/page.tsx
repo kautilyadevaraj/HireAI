@@ -12,8 +12,8 @@ export default async function RoleSetupPage() {
     }
 
     return (
-        <div className="flex min-h-screen p-4 w-full items-center justify-center">
-            <div className="text-center">
+        <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20 flex items-center justify-center p-4">
+            <div className="w-full max-w-4xl">
                 <SetupForm />
             </div>
         </div>

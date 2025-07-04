@@ -10,6 +10,7 @@ import {
     Search,
     Settings,
     Home,
+    Target,
 } from "lucide-react";
 import {
     Sidebar,
@@ -38,14 +39,14 @@ const menuItems = [
         icon: Search,
     },
     {
-        title: "Candidate Pool",
-        url: "/candidates",
-        icon: Users,
-    },
-    {
         title: "Resume Parser",
         url: "/resume-parser",
         icon: FileText,
+    },
+    {
+        title: "JD-Resume Matching",
+        url: "/jd-matcher",
+        icon: Target,
     },
     {
         title: "Analytics",
@@ -81,10 +82,10 @@ export function AppSidebar() {
                     </div>
                     <div className="flex flex-col">
                         <span className="text-lg font-semibold tracking-tight group-hover:text-primary transition-colors duration-300">
-                            HireAI
+                            HeadRoom
                         </span>
                         <span className="text-xs text-muted-foreground/60">
-                            AI Hiring Platform
+                            Talent Platform
                         </span>
                     </div>
                 </div>
@@ -138,7 +139,7 @@ export function AppSidebar() {
 
             <SidebarFooter className="p-4 bg-card/80 border-t border-border/30">
                 <div className="text-xs text-muted-foreground/50 hover:text-muted-foreground transition-colors duration-200 cursor-default">
-                    © 2025 HireAI Platform
+                                            © 2025 HeadRoom Platform
                 </div>
             </SidebarFooter>
         </Sidebar>

@@ -59,7 +59,7 @@ export function CandidateSidebar() {
                         <User className="h-4 w-4" />
                     </div>
                     <div className="flex flex-col">
-                        <span className="text-lg font-semibold">HireAI</span>
+                        <span className="text-lg font-semibold">HeadRoom</span>
                         <span className="text-xs text-muted-foreground">
                             Candidate Portal
                         </span>
@@ -90,7 +90,7 @@ export function CandidateSidebar() {
             </SidebarContent>
             <SidebarFooter className="p-4">
                 <div className="text-xs text-muted-foreground">
-                    © 2024 HireAI Platform
+                                            © 2024 HeadRoom Platform
                 </div>
             </SidebarFooter>
         </Sidebar>
